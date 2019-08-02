@@ -1,7 +1,5 @@
 import React from "react";
 
-export default class Formula extends React.Component {
-  render() {
-    return <div className="formulaScreen">{this.props.formula}</div>;
-  }
+export default function Formula(props) {
+  return <div className="formulaScreen">{props.formula}</div>;
 }

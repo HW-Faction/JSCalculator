@@ -21,27 +21,23 @@ class App extends React.Component {
       currentSign: "pos",
       lastClicked: ""
     };
-    this.maxDigitWarning = this.maxDigitWarning.bind(this);
-    this.handleOperators = this.handleOperators.bind(this);
-    this.handleEvaluate = this.handleEvaluate.bind(this);
-    this.initialize = this.initialize.bind(this);
-    this.handleDecimal = this.handleDecimal.bind(this);
-    this.handleNumbers = this.handleNumbers.bind(this);
   }
 
-  maxDigitWarning() {
+  maxDigitWarning = () => {
     this.setState({
       currentVal: "Digit Limit Met",
       prevVal: this.state.currentVal
     });
     setTimeout(() => this.setState({ currentVal: this.state.prevVal }), 1000);
-  }
+  };
 
-  handleEvaluate() {
+  handleEvaluate = () => {
     if (!this.state.currentVal.includes("Limit")) {
       let expression = this.state.formula;
+      console.log(expression);
       if (endsWithOperator.test(expression))
         expression = expression.slice(0, -1);
+      console.log(expression);
       expression = expression.replace(/x/g, "*").replace(/‑/g, "-");
       let answer = Math.round(1000000000000 * eval(expression)) / 1000000000000;
       this.setState({
@@ -51,17 +47,19 @@ class App extends React.Component {
         prevVal: answer,
         evaluated: true
       });
+      console.log(this.state.formula);
+      console.log(this.state.prevVal);
+      console.log(this.state.currentVal);
     }
-  }
+  };
 
-  handleOperators(e) {
+  handleOperators = e => {
     if (!this.state.currentVal.includes("Limit")) {
       this.setState({ currentVal: e.target.value, evaluated: false });
       if (this.state.formula.includes("=")) {
-        this.setState({ formula: this.state.prevVal + e.target.value }); // comment 1
+        this.setState({ formula: this.state.prevVal + e.target.value });
       } else {
         this.setState({
-          // comment 2
           prevVal: !isOperator.test(this.state.currentVal)
             ? this.state.formula
             : this.state.prevVal,
@@ -71,9 +69,9 @@ class App extends React.Component {
         });
       }
     }
-  }
+  };
 
-  handleNumbers(e) {
+  handleNumbers = e => {
     if (!this.state.currentVal.includes("Limit")) {
       this.setState({ evaluated: false });
       if (this.state.currentVal.length > 21) {
@@ -81,17 +79,17 @@ class App extends React.Component {
       } else if (this.state.evaluated === true) {
         this.setState({
           currentVal: e.target.value,
-          formula: e.target.value != "0" ? e.target.value : ""
+          formula: e.target.value !== "0" ? e.target.value : ""
         });
       } else {
         this.setState({
           currentVal:
-            this.state.currentVal == "0" ||
+            this.state.currentVal === "0" ||
             isOperator.test(this.state.currentVal)
               ? e.target.value
               : this.state.currentVal + e.target.value,
           formula:
-            this.state.currentVal == "0" && e.target.value == "0"
+            this.state.currentVal === "0" && e.target.value === "0"
               ? this.state.formula
               : /([^.0-9]0)$/.test(this.state.formula)
               ? this.state.formula.slice(0, -1) + e.target.value
@@ -99,9 +97,9 @@ class App extends React.Component {
         });
       }
     }
-  }
+  };
 
-  handleDecimal() {
+  handleDecimal = () => {
     if (this.state.evaluated === true) {
       this.setState({
         currentVal: "0.",
@@ -117,7 +115,7 @@ class App extends React.Component {
         this.maxDigitWarning();
       } else if (
         endsWithOperator.test(this.state.formula) ||
-        (this.state.currentVal == "0" && this.state.formula === "")
+        (this.state.currentVal === "0" && this.state.formula === "")
       ) {
         this.setState({
           currentVal: "0.",
@@ -130,9 +128,9 @@ class App extends React.Component {
         });
       }
     }
-  }
+  };
 
-  initialize() {
+  initialize = () => {
     this.setState({
       currentVal: "0",
       prevVal: "0",
@@ -140,7 +138,7 @@ class App extends React.Component {
       currentSign: "pos",
       lastClicked: ""
     });
-  }
+  };
 
   render() {
     return (
