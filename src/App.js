@@ -34,10 +34,8 @@ class App extends React.Component {
   handleEvaluate = () => {
     if (!this.state.currentVal.includes("Limit")) {
       let expression = this.state.formula;
-      console.log(expression);
       if (endsWithOperator.test(expression))
         expression = expression.slice(0, -1);
-      console.log(expression);
       expression = expression.replace(/x/g, "*").replace(/‑/g, "-");
       let answer = Math.round(1000000000000 * eval(expression)) / 1000000000000;
       this.setState({
@@ -47,9 +45,6 @@ class App extends React.Component {
         prevVal: answer,
         evaluated: true
       });
-      console.log(this.state.formula);
-      console.log(this.state.prevVal);
-      console.log(this.state.currentVal);
     }
   };
 
@@ -60,13 +55,34 @@ class App extends React.Component {
         this.setState({ formula: this.state.prevVal + e.target.value });
       } else {
         this.setState({
-          prevVal: !isOperator.test(this.state.currentVal)
-            ? this.state.formula
-            : this.state.prevVal,
-          formula: !isOperator.test(this.state.currentVal)
-            ? (this.state.formula += e.target.value)
-            : (this.state.prevVal += e.target.value)
+          prevVal: isOperator.test(this.state.currentVal)
+            ? this.state.prevVal
+            : this.state.formula,
+          formula: isOperator.test(this.state.currentVal)
+            ? (this.state.prevVal += e.target.value)
+            : (this.state.formula += e.target.value)
         });
+
+        if (
+          isOperator.test(this.state.currentVal) &&
+          isOperator.test(this.state.prevVal.slice(1, 2))
+        ) {
+          if (
+            this.state.prevVal === "/" ||
+            this.state.prevVal.slice(1, 2) === "+" ||
+            this.state.prevVal.slice(1, 2) === "x"
+          ) {
+            console.log("Hello Folks!");
+          } else {
+            console.log("FINALLY REACH HERE");
+            console.log(this.state.formula);
+            console.log(this.state.currentVal);
+            console.log(this.state.prevVal);
+            /*  this.setState({
+              prevVal: this.state.formula
+            }); */
+          }
+        }
       }
     }
   };
